@@ -1,0 +1,598 @@
+/* ============================================================
+   INTERNATIONAL WOMEN'S DAY — 8 MARCH
+   Design system, typography, keyframe animations
+   ============================================================ */
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Design Tokens ── */
+:root {
+  --purple-deep:  #2d0a4e;
+  --purple-mid:   #7b2d8b;
+  --purple-soft:  #c084fc;
+  --rose-dark:    #be185d;
+  --rose-mid:     #ec4899;
+  --rose-light:   #fbcfe8;
+  --gold:         #f59e0b;
+  --gold-light:   #fde68a;
+  --cream:        #fff8f0;
+  --white:        #ffffff;
+
+  --bg-landing:     radial-gradient(ellipse at 30% 40%, #2d0a4e 0%, #7b2d8b 45%, #be185d 100%);
+  --bg-celebration: radial-gradient(ellipse at 50% 30%, #0f001a 0%, #2d0a4e 50%, #5b1a6e 100%);
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-script:  'Dancing Script', cursive;
+  --font-body:    'Lato', system-ui, sans-serif;
+}
+
+/* ── Screen System ── */
+.screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.screen.hidden { display: none !important; }
+
+/* ============================================================
+   SCREEN 1: LANDING
+   ============================================================ */
+
+.screen-landing { background: var(--bg-landing); }
+
+/* ── NU Centered Logo (landing) ── */
+.nu-center {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.9rem;
+  animation: nuCornerFadeIn 1.5s ease 0.3s both;
+}
+
+@keyframes nuCornerFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nu-center-logo {
+  width: 72px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+/* ── Ambient Petal Layer ── */
+.ambient-petals {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.petal {
+  position: absolute;
+  top: -40px;
+  border-radius: 50% 0 50% 0;
+  animation: fallPetal linear infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes fallPetal {
+  0%   { transform: translateY(0)     rotate(0deg)   translateX(0);    opacity: 0; }
+  5%   { opacity: 0.85; }
+  50%  { transform: translateY(50vh)  rotate(180deg) translateX(35px); opacity: 0.7; }
+  95%  { opacity: 0.4; }
+  100% { transform: translateY(110vh) rotate(400deg) translateX(-20px); opacity: 0; }
+}
+
+/* ── Sparkle Layer ── */
+.sparkle-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sparkle-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gold-light);
+  animation: sparklePulse ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes sparklePulse {
+  0%, 100% { transform: scale(0.5); opacity: 0.15; }
+  50%       { transform: scale(1.5); opacity: 0.95; }
+}
+
+/* ── Landing Content ── */
+.landing-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  max-width: 540px;
+  width: 100%;
+}
+
+.flower-emblem {
+  margin-bottom: 1rem;
+  animation: floatFlower 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 22px rgba(245,158,11,0.5));
+}
+
+@keyframes floatFlower {
+  0%, 100% { transform: translateY(0)   rotate(0deg); }
+  33%       { transform: translateY(-9px) rotate(4deg); }
+  66%       { transform: translateY(-4px) rotate(-2deg); }
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.82rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.4rem;
+  opacity: 0.9;
+}
+
+.eyebrow.gold-text {
+  color: var(--gold);
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+}
+
+.eyebrow.white-text {
+  color: var(--white);
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  opacity: 0.9;
+}
+
+.landing-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 6.5vw, 4.2rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.1;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 30px rgba(245,158,11,0.3);
+}
+
+.title-accent {
+  color: var(--gold-light);
+  font-style: italic;
+  display: block;
+  text-shadow: 0 0 40px rgba(245,158,11,0.65), 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.landing-sub {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(0.88rem, 2.3vw, 1rem);
+  color: var(--rose-light);
+  line-height: 1.75;
+  margin-bottom: 1.8rem;
+  opacity: 0.9;
+}
+
+/* ── Form ── */
+#name-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.input-wrapper { width: 100%; }
+
+#name-input {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(245,158,11,0.4);
+  border-radius: 50px;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 1.12rem;
+  font-weight: 300;
+  padding: 0.88rem 1.8rem;
+  letter-spacing: 0.03em;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  outline: none;
+  text-align: center;
+}
+#name-input::placeholder { color: rgba(251,207,232,0.45); }
+#name-input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 0 0 4px rgba(245,158,11,0.15), 0 0 40px rgba(245,158,11,0.22);
+}
+#name-input.shake { animation: shake 0.5s ease; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-10px); }
+  30% { transform: translateX(10px); }
+  45% { transform: translateX(-7px); }
+  60% { transform: translateX(7px); }
+  75% { transform: translateX(-4px); }
+  90% { transform: translateX(4px); }
+}
+
+/* ── Submit Button ── */
+.btn-celebrate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, var(--rose-dark) 0%, var(--purple-mid) 50%, var(--gold) 100%);
+  background-size: 200% 200%;
+  animation: btnShimmer 3s ease infinite;
+  border-radius: 50px;
+  border: none;
+  padding: 0.88rem 2.2rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--white);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 24px rgba(190,24,93,0.4);
+}
+@keyframes btnShimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.btn-celebrate:hover  { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 36px rgba(236,72,153,0.55); }
+.btn-celebrate:active { transform: translateY(0) scale(0.98); }
+.btn-celebrate svg    { fill: rgba(255,255,255,0.9); stroke: none; flex-shrink: 0; }
+
+/* ============================================================
+   SCREEN 2: CELEBRATION
+   ============================================================ */
+
+.screen-celebration {
+  background: var(--bg-celebration);
+  transition: opacity 0.8s ease;
+}
+
+/* CSS star field — bottom layer */
+.star-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: twinkleStar ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes twinkleStar {
+  0%, 100% { opacity: 0.08; transform: scale(0.7); }
+  50%       { opacity: 0.95; transform: scale(1.4); }
+}
+
+/* Canvas — above star field */
+#particle-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Celebration content — topmost */
+.celebration-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.6rem 1.5rem 1rem;
+  max-width: 680px;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Dark backing card — sits behind text, dims particles in center */
+.celebration-content::before {
+  content: '';
+  position: absolute;
+  inset: -0.5rem -1.2rem;
+  z-index: -1;
+  background: rgba(12, 0, 22, 0.58);
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+/* ── NU Stamp (top of celebration) ── */
+.nu-stamp {
+  margin-bottom: 0.4rem;
+  animation: nuStampAppear 1s ease 0.3s both;
+}
+@keyframes nuStampAppear {
+  from { opacity: 0; transform: scale(0.8) translateY(-10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.nu-stamp-logo {
+  width: 62px;
+  height: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+/* ── Celebration Title ── */
+.celeb-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3.8vw, 2.5rem);
+  font-weight: 400;
+  color: var(--gold-light);
+  line-height: 1.2;
+  margin-bottom: 0.1rem;
+  text-shadow: 0 0 50px rgba(245,158,11,0.4), 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* ── Name Row — keeps name + "!" on one line ── */
+.name-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin-bottom: 1rem;
+  line-height: 1;
+  gap: 0.02em;
+}
+
+.name-display {
+  display: inline-block;
+  font-family: var(--font-script);
+  font-size: clamp(2.8rem, 8.5vw, 5.2rem);
+  font-weight: 700;
+  background: linear-gradient(90deg,
+    var(--rose-mid)   10%,
+    var(--gold-light) 40%,
+    var(--white)      55%,
+    var(--gold-light) 70%,
+    var(--rose-mid)   90%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nameShimmer 3s linear infinite;
+  filter: drop-shadow(0 0 18px rgba(245,158,11,0.4));
+  line-height: 1.1;
+}
+
+.name-exclaim {
+  display: inline-block;
+  font-family: var(--font-script);
+  font-size: clamp(2.2rem, 6.5vw, 4rem);
+  font-weight: 700;
+  background: linear-gradient(90deg,
+    var(--gold-light) 0%,
+    var(--white)      50%,
+    var(--gold-light) 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: nameShimmer 3s linear 0.15s infinite;
+  line-height: 1.1;
+  flex-shrink: 0;
+  /* slight bottom push to align with script baseline */
+  margin-bottom: -0.05em;
+}
+
+@keyframes nameShimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Celebration Body Lines ── */
+.celeb-body { margin-bottom: 0.8rem; }
+
+.celeb-line {
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: var(--rose-light);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  line-height: 1.9;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.celeb-line.revealed { opacity: 1; transform: translateY(0); }
+.celeb-line.italic {
+  font-style: italic;
+  color: var(--gold-light);
+  font-size: clamp(0.82rem, 1.8vw, 1.05rem);
+}
+.celeb-line.italic.revealed { opacity: 0.95; }
+
+/* ── Rotating Quotes ── */
+.quotes-container {
+  position: relative;
+  height: 3.2rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  width: 100%;
+}
+
+.quote {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(0.72rem, 1.6vw, 0.9rem);
+  color: rgba(253,230,138,0.65);
+  line-height: 1.5;
+  text-align: center;
+  padding: 0 0.5rem;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+.quote.active-quote { opacity: 1; }
+.quote em {
+  font-style: normal;
+  color: rgba(245,158,11,0.55);
+  font-size: 0.78em;
+  margin-top: 0.1em;
+}
+
+/* ── Floating DOM Icons ── */
+.float-icons {
+  display: flex;
+  gap: 1.1rem;
+  margin-bottom: 0.6rem;
+  pointer-events: none;
+}
+.float-icon {
+  display: inline-block;
+  font-size: 1.4rem;
+  color: var(--rose-mid);
+  animation: floatIcon 2.5s ease-in-out infinite;
+  text-shadow: 0 0 12px rgba(236,72,153,0.7);
+}
+.float-icon.star {
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(245,158,11,0.7);
+  font-size: 1.1rem;
+}
+.float-icon:nth-child(1) { animation-delay: 0s; }
+.float-icon:nth-child(2) { animation-delay: 0.35s; animation-duration: 2.8s; }
+.float-icon:nth-child(3) { animation-delay: 0.7s;  animation-duration: 2.3s; }
+.float-icon:nth-child(4) { animation-delay: 1.05s; animation-duration: 3s; }
+.float-icon:nth-child(5) { animation-delay: 1.4s;  animation-duration: 2.6s; }
+.float-icon:nth-child(6) { animation-delay: 1.75s; animation-duration: 2.2s; }
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0)    scale(1); }
+  50%       { transform: translateY(-13px) scale(1.22); }
+}
+
+/* ── NU Signature at bottom ── */
+.nu-signature {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.6rem;
+  opacity: 0;
+  animation: sigFadeIn 1.2s ease 3s forwards;
+  pointer-events: none;
+}
+@keyframes sigFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nu-sig-dash {
+  font-family: var(--font-display);
+  color: rgba(245,158,11,0.4);
+  font-size: 0.9rem;
+}
+.nu-sig-text {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.82rem;
+  color: rgba(253,230,138,0.7);
+  letter-spacing: 0.05em;
+}
+
+/* ── Replay Button ── */
+.btn-replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 50px;
+  padding: 0.5rem 1.3rem;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: rgba(253,230,138,0.75);
+  cursor: pointer;
+  letter-spacing: 0.07em;
+  transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s;
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+.btn-replay:hover {
+  background: rgba(245,158,11,0.14);
+  border-color: rgba(245,158,11,0.65);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+}
+.btn-replay:active { transform: translateY(0); }
+
+/* ── Celebration entrance ── */
+@keyframes celebFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.celebration-content.entering {
+  animation: celebFadeIn 0.8s ease forwards;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+  .landing-content,
+  .celebration-content { padding: 1.2rem 1rem 0.8rem; }
+  .flower-emblem svg   { width: 88px; height: 88px; }
+  .nu-corner-logo      { width: 48px; }
+  .quotes-container    { height: 5rem; }
+  .float-icons         { gap: 0.7rem; }
+  .float-icon          { font-size: 1.1rem; }
+  .float-icon.star     { font-size: 0.9rem; }
+  .nu-stamp-logo       { width: 36px; }
+}
+
+@media (max-height: 700px) {
+  .flower-emblem       { margin-bottom: 0.5rem; }
+  .landing-title       { margin-bottom: 0.4rem; }
+  .landing-sub         { margin-bottom: 1.1rem; }
+  .nu-stamp            { margin-bottom: 0.2rem; }
+  .celeb-title         { font-size: clamp(1.1rem, 3vw, 1.9rem); margin-bottom: 0; }
+  .name-row            { margin-bottom: 0.6rem; }
+  .name-display        { font-size: clamp(2.2rem, 7vw, 3.8rem); }
+  .name-exclaim        { font-size: clamp(1.8rem, 5.5vw, 3rem); }
+  .celeb-body          { margin-bottom: 0.5rem; }
+  .quotes-container    { height: 2.8rem; }
+  .float-icons         { margin-bottom: 0.3rem; }
+  .nu-signature        { margin-bottom: 0.3rem; }
+}
