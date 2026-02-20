@@ -989,50 +989,142 @@ function generateStarField() {
 
 // ── 21. SCREEN TRANSITION ────────────────────────────────────
 
-function launchCelebration(name) {
-  // Pick a random wish and populate lines
+const heartReveal    = document.getElementById('heart-reveal');
+const hrGlow         = document.querySelector('.hr-glow');
+const hrNameEl       = document.querySelector('.hr-name');
+const hrSparkles     = document.querySelector('.hr-sparkles');
+
+// Generate ambient sparkles inside the heart reveal backdrop
+function generateHrSparkles() {
+  hrSparkles.innerHTML = '';
+  for (let i = 0; i < 22; i++) {
+    const s = document.createElement('div');
+    s.className = 'hr-sparkle';
+    const size = rand(2, 5.5);
+    s.style.cssText = `
+      left: ${rand(3, 97)}%;
+      top:  ${rand(3, 97)}%;
+      width:  ${size}px;
+      height: ${size}px;
+      animation-duration: ${rand(1.4, 4)}s;
+      animation-delay:    ${rand(-3, 1)}s;
+    `;
+    hrSparkles.appendChild(s);
+  }
+}
+
+// Burst cursor hearts explosively from screen centre
+function burstHeartsFromCenter() {
+  const cx = window.innerWidth  / 2;
+  const cy = window.innerHeight / 2;
+  for (let i = 0; i < 22; i++) {
+    setTimeout(() => {
+      const angle = (i / 22) * Math.PI * 2 + rand(-0.3, 0.3);
+      const dist  = rand(30, 120);
+      const x = cx + Math.cos(angle) * dist;
+      const y = cy + Math.sin(angle) * dist;
+      const el = document.createElement('span');
+      el.className   = 'cursor-heart';
+      el.textContent = '♥';
+      const size  = rand(22, 46);
+      const color = rndColor(CURSOR_COLORS);
+      el.style.cssText = `
+        left: ${x}px; top: ${y}px;
+        font-size: ${size}px;
+        color: ${color};
+        text-shadow: 0 0 14px ${color};
+        --dur: ${rand(0.9, 1.5)}s;
+        --drift: ${rand(-80, 80)}px;
+        --rot-start: ${rand(-40, 40)}deg;
+        --rot-end:   ${rand(-80, 80)}deg;
+      `;
+      document.body.appendChild(el);
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    }, i * 35);
+  }
+}
+
+function showCelebrationScreen(name) {
+  // Pick wish and populate lines
   const wish = WISHES[Math.floor(Math.random() * WISHES.length)];
-  const lines = document.querySelectorAll('.celeb-line');
-  lines.forEach((line, i) => {
+  document.querySelectorAll('.celeb-line').forEach((line, i) => {
     line.textContent = wish.lines[i] || '';
   });
+  document.querySelectorAll('.celeb-line').forEach(l => l.classList.remove('revealed'));
+  document.querySelectorAll('.quote').forEach(q => q.classList.remove('active-quote'));
+  clearInterval(quoteInterval);
 
-  // Fade out landing
-  landingScreen.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  celebrationScreen.classList.remove('hidden');
+  celebrationScreen.style.opacity = '0';
+  celebContent.classList.remove('entering');
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      celebrationScreen.style.transition = 'opacity 0.7s ease';
+      celebrationScreen.style.opacity    = '1';
+      celebContent.classList.add('entering');
+
+      resizeCanvas();
+      startParticleSystem();
+
+      nameDisplay.textContent = '';
+      typewriterReveal(name, nameDisplay);
+      revealTextLines();
+      setTimeout(startQuoteRotation, 2800);
+    });
+  });
+}
+
+function launchCelebration(name) {
+  generateHrSparkles();
+
+  // 1 — Fade out landing
+  landingScreen.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   landingScreen.style.opacity    = '0';
-  landingScreen.style.transform  = 'translateY(-36px)';
+  landingScreen.style.transform  = 'translateY(-30px)';
 
   setTimeout(() => {
     landingScreen.classList.add('hidden');
 
-    // Reset celebration state
-    document.querySelectorAll('.celeb-line').forEach(l => l.classList.remove('revealed'));
-    document.querySelectorAll('.quote').forEach(q => q.classList.remove('active-quote'));
-    clearInterval(quoteInterval);
+    // 2 — Show heart reveal
+    hrGlow.classList.remove('hr-beating', 'hr-exploding');
+    hrGlow.style.animation = 'none';
+    void hrGlow.offsetWidth; // reflow to restart animation
+    hrGlow.style.animation = '';
 
-    // Show celebration screen
-    celebrationScreen.classList.remove('hidden');
-    celebrationScreen.style.opacity = '0';
-    celebContent.classList.remove('entering');
+    // Reset text animations by re-inserting elements
+    const hrGreeting = document.querySelector('.hr-greeting');
+    hrGreeting.style.animation = 'none';
+    hrNameEl.style.animation   = 'none';
+    void hrGreeting.offsetWidth;
+    hrGreeting.style.animation = '';
+    hrNameEl.style.animation   = '';
+    hrNameEl.textContent = '';
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        celebrationScreen.style.transition = 'opacity 0.8s ease';
-        celebrationScreen.style.opacity    = '1';
-        celebContent.classList.add('entering');
+    heartReveal.classList.remove('hidden');
 
-        resizeCanvas();
-        startParticleSystem();
+    // Type the name inside the heart
+    setTimeout(() => typewriterReveal(name, hrNameEl), 550);
 
-        // Typewriter name reveal
-        nameDisplay.textContent = '';
-        typewriterReveal(name, nameDisplay);
+    // 3 — After enter animation, start beating
+    setTimeout(() => {
+      hrGlow.classList.add('hr-beating');
+    }, 750);
 
-        revealTextLines();
-        setTimeout(startQuoteRotation, 2800);
-      });
-    });
-  }, 660);
+    // 4 — Explode and transition to celebration
+    setTimeout(() => {
+      hrGlow.classList.remove('hr-beating');
+      hrGlow.classList.add('hr-exploding');
+      burstHeartsFromCenter();
+
+      setTimeout(() => {
+        heartReveal.classList.add('hidden');
+        showCelebrationScreen(name);
+      }, 520);
+
+    }, 2900);
+
+  }, 520);
 }
 
 // ── 22. FORM & EVENTS ────────────────────────────────────────

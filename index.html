@@ -71,6 +71,32 @@
     </div>
   </section>
 
+  <!-- HEART REVEAL (intermediate transition) -->
+  <div id="heart-reveal" class="hidden" aria-hidden="true">
+    <div class="hr-sparkles"></div>
+    <div class="hr-scene">
+      <!-- Glow wrapper so drop-shadow works outside the clip -->
+      <div class="hr-glow">
+        <svg class="hr-heart-svg" viewBox="0 0 340 290" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#be185d"/>
+              <stop offset="48%"  stop-color="#ec4899"/>
+              <stop offset="100%" stop-color="#c084fc"/>
+            </linearGradient>
+          </defs>
+          <path d="M 170 280 C 40 200 0 115 0 68 C 0 29 30 0 76 0 C 116 0 151 26 170 55 C 189 26 224 0 264 0 C 310 0 340 29 340 68 C 340 115 300 200 170 280 Z"
+                fill="url(#heartGrad)"/>
+        </svg>
+      </div>
+      <!-- Text layered over the heart -->
+      <div class="hr-text">
+        <span class="hr-greeting">Happy Women's Day,</span>
+        <span class="hr-name"></span>
+      </div>
+    </div>
+  </div>
+
   <!-- SCREEN 2: CELEBRATION -->
   <section id="celebration" class="screen screen-celebration hidden">
 
