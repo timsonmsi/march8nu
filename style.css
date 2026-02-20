@@ -567,6 +567,31 @@ html, body {
   animation: celebFadeIn 0.8s ease forwards;
 }
 
+/* ── Cursor Heart Trail ── */
+.cursor-heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+  line-height: 1;
+  transform-origin: center bottom;
+  animation: cursorHeartFloat var(--dur, 0.9s) ease forwards;
+}
+
+@keyframes cursorHeartFloat {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(var(--rot-start, 0deg));
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--drift, 0px)), calc(-50% - 70px)) scale(0.3) rotate(var(--rot-end, 20deg));
+  }
+}
+
 /* ============================================================
    RESPONSIVE
    ============================================================ */

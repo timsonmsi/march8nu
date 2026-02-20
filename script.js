@@ -1067,7 +1067,70 @@ btnReplay.addEventListener('click', () => {
   }, 60);
 });
 
-// ── 23. INIT ─────────────────────────────────────────────────
+// ── 23. CURSOR HEART TRAIL ───────────────────────────────────
+
+const CURSOR_SYMBOLS = ['♥', '♥', '♥', '❀', '✦', '♡'];
+const CURSOR_COLORS  = [
+  '#ec4899', '#f472b6', '#f9a8d4',
+  '#f59e0b', '#fde68a', '#fbcfe8',
+  '#c084fc', '#ffffff',
+];
+
+let lastEmitTime = 0;
+let lastEmitX    = -999;
+let lastEmitY    = -999;
+
+function emitCursorHeart(x, y) {
+  const now  = Date.now();
+  const dx   = x - lastEmitX;
+  const dy   = y - lastEmitY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+
+  // Throttle: at least 14px moved OR 55ms elapsed
+  if (dist < 14 && now - lastEmitTime < 55) return;
+
+  lastEmitTime = now;
+  lastEmitX    = x;
+  lastEmitY    = y;
+
+  const el = document.createElement('span');
+  el.className  = 'cursor-heart';
+  el.textContent = CURSOR_SYMBOLS[Math.floor(Math.random() * CURSOR_SYMBOLS.length)];
+
+  const size      = rand(18, 34);
+  const dur       = rand(0.75, 1.15);
+  const drift     = rand(-30, 30);
+  const rotStart  = rand(-25, 25);
+  const rotEnd    = rand(-45, 45);
+  const color     = rndColor(CURSOR_COLORS);
+
+  el.style.cssText = `
+    left: ${x}px;
+    top: ${y}px;
+    font-size: ${size}px;
+    color: ${color};
+    text-shadow: 0 0 8px ${color};
+    --dur: ${dur}s;
+    --drift: ${drift}px;
+    --rot-start: ${rotStart}deg;
+    --rot-end: ${rotEnd}deg;
+  `;
+
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove(), { once: true });
+}
+
+document.addEventListener('mousemove', e => {
+  emitCursorHeart(e.clientX, e.clientY);
+});
+
+// Touch support
+document.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  emitCursorHeart(t.clientX, t.clientY);
+}, { passive: true });
+
+// ── 24. INIT ─────────────────────────────────────────────────
 
 generateStarField();
 generateLandingPetals();
