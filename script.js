@@ -276,7 +276,6 @@ const nameInput         = document.getElementById('name-input');
 const nameDisplay       = document.querySelector('.name-display');
 const canvas            = document.getElementById('particle-canvas');
 const ctx               = canvas.getContext('2d');
-const btnReplay         = document.getElementById('btn-replay');
 const celebContent      = document.querySelector('.celebration-content');
 
 // ── 4. COLORS ────────────────────────────────────────────────
@@ -1127,7 +1126,121 @@ function launchCelebration(name) {
   }, 520);
 }
 
-// ── 22. FORM & EVENTS ────────────────────────────────────────
+// ── 22. VIDEO PLAYER ─────────────────────────────────────────
+
+const danceVideo    = document.getElementById('dance-video');
+const btnPlayPause  = document.getElementById('btn-play-pause');
+const vctrlScrubber = document.getElementById('vctrl-scrubber');
+const vctrlFill     = document.getElementById('vctrl-fill');
+const vctrlTime     = document.getElementById('vctrl-time');
+const iconPlay      = document.getElementById('vctrl-icon-play');
+const iconPause     = document.getElementById('vctrl-icon-pause');
+
+function formatVideoTime(s) {
+  const m   = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+btnPlayPause.addEventListener('click', () => {
+  if (danceVideo.paused) { danceVideo.play(); } else { danceVideo.pause(); }
+});
+
+danceVideo.addEventListener('play', () => {
+  iconPlay.classList.add('vctrl-icon-hidden');
+  iconPause.classList.remove('vctrl-icon-hidden');
+});
+danceVideo.addEventListener('pause', () => {
+  iconPlay.classList.remove('vctrl-icon-hidden');
+  iconPause.classList.add('vctrl-icon-hidden');
+});
+danceVideo.addEventListener('ended', () => {
+  iconPlay.classList.remove('vctrl-icon-hidden');
+  iconPause.classList.add('vctrl-icon-hidden');
+  vctrlFill.style.width = '0%';
+  vctrlScrubber.value   = 0;
+  vctrlTime.textContent = '0:00';
+});
+
+danceVideo.addEventListener('timeupdate', () => {
+  if (!danceVideo.duration) return;
+  const pct = (danceVideo.currentTime / danceVideo.duration) * 100;
+  vctrlFill.style.width = pct + '%';
+  vctrlScrubber.value   = pct;
+  vctrlTime.textContent = formatVideoTime(danceVideo.currentTime);
+});
+
+vctrlScrubber.addEventListener('input', () => {
+  if (!danceVideo.duration) return;
+  danceVideo.currentTime = (vctrlScrubber.value / 100) * danceVideo.duration;
+});
+
+// Fullscreen
+const btnFullscreen = document.getElementById('btn-fullscreen');
+btnFullscreen.addEventListener('click', () => {
+  const req = danceVideo.requestFullscreen
+            || danceVideo.webkitRequestFullscreen
+            || danceVideo.mozRequestFullScreen;
+  if (req) req.call(danceVideo);
+});
+
+// Pause video on scrub start, resume on release
+let wasPaused = false;
+vctrlScrubber.addEventListener('mousedown', () => { wasPaused = danceVideo.paused; danceVideo.pause(); });
+vctrlScrubber.addEventListener('touchstart', () => { wasPaused = danceVideo.paused; danceVideo.pause(); }, { passive: true });
+vctrlScrubber.addEventListener('mouseup', () => { if (!wasPaused) danceVideo.play(); });
+vctrlScrubber.addEventListener('touchend', () => { if (!wasPaused) danceVideo.play(); });
+
+// ── 22b. HEART FRAME GENERATOR ───────────────────────────────
+
+function generateVideoHeartFrame() {
+  const frame = document.getElementById('heart-frame');
+  if (!frame) return;
+  frame.innerHTML = '';
+
+  // Colors alternating pink / rose / gold
+  const colors = ['#ec4899', '#f472b6', '#f9a8d4', '#f59e0b', '#fde68a', '#be185d', '#c084fc'];
+
+  function addHeart(leftPct, topPct, size, colorIdx, delayS, durS) {
+    const span = document.createElement('span');
+    span.className = 'frame-heart';
+    span.textContent = '♥';
+    const color = colors[colorIdx % colors.length];
+    span.style.cssText = [
+      'left:'                    + leftPct + '%;',
+      'top:'                     + topPct  + '%;',
+      'font-size:'               + size    + 'px;',
+      'color:'                   + color   + ';',
+      'text-shadow: 0 0 8px '   + color   + ';',
+      'animation-delay:'         + delayS  + 's;',
+      'animation-duration:'      + durS    + 's;',
+    ].join(' ');
+    frame.appendChild(span);
+  }
+
+  let ci = 0; // color index rotator
+
+  // Top edge (every ~10%, y = 0%)
+  for (let x = 5; x <= 95; x += 10) {
+    const isCorner = x <= 5 || x >= 95;
+    addHeart(x, 0, isCorner ? 16 : 12, ci++, rand(0, 3), rand(1.6, 3.2));
+  }
+  // Bottom edge (y = 100%)
+  for (let x = 5; x <= 95; x += 10) {
+    const isCorner = x <= 5 || x >= 95;
+    addHeart(x, 100, isCorner ? 16 : 12, ci++, rand(0, 3), rand(1.6, 3.2));
+  }
+  // Left edge (x = 0%, skip corners)
+  for (let y = 15; y <= 85; y += 17) {
+    addHeart(0, y, 11, ci++, rand(0, 3), rand(2, 3.5));
+  }
+  // Right edge (x = 100%, skip corners)
+  for (let y = 15; y <= 85; y += 17) {
+    addHeart(100, y, 11, ci++, rand(0, 3), rand(2, 3.5));
+  }
+}
+
+// ── 23. FORM & EVENTS ────────────────────────────────────────
 
 nameForm.addEventListener('submit', e => {
   e.preventDefault();
@@ -1146,18 +1259,6 @@ nameInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') nameForm.dispatchEvent(new Event('submit'));
 });
 
-btnReplay.addEventListener('click', () => {
-  clearAllParticles();
-  document.querySelectorAll('.celeb-line').forEach(l => l.classList.remove('revealed'));
-  document.querySelectorAll('.quote').forEach(q => q.classList.remove('active-quote'));
-  clearInterval(quoteInterval);
-  setTimeout(() => {
-    resizeCanvas();
-    startParticleSystem();
-    revealTextLines();
-    setTimeout(startQuoteRotation, 2800);
-  }, 60);
-});
 
 // ── 23. CURSOR HEART TRAIL ───────────────────────────────────
 
@@ -1227,6 +1328,7 @@ document.addEventListener('touchmove', e => {
 generateStarField();
 generateLandingPetals();
 generateSparkles();
+generateVideoHeartFrame();
 
 function generateLandingPetals() {
   const container = document.querySelector('.ambient-petals');
